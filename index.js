@@ -30,11 +30,18 @@ console.log('örnek görev:', ilkiniDon(['as','sa'],function(metin){return metin
   Aşağıdaki skor1 ve skor2 kodlarını inceleyiniz ve aşağıdaki soruları altına not alarak cevaplayın
   
   1. skor1 ve skor2 arasındaki fark nedir?
-  
+  skor 1 closure fonksiyon kullanıyor,bunun nedeni fonksiyonun dışarıdan değişilmesini önlemek ve fonksiyonu çağırdığımız zaman her bir çağırmada değerini arttırmak.
+  skor 2 de ise let skor=0 değerinde globalde yazılmış yani fonksiyonun içerisinde tanımlanmamış buda dışarıdan o değere erişilmesini sağlar.skor 2 fonksiyonunu çağırdığında skor 1 ile aynı işlevi yapar.
+  Ancak birisinde variable değerine dışarıdan erişilirken diğerine erişelemez.Farkı budur.
   2. Hangisi bir closure kullanmaktadır? Nasıl tarif edebilirsin? (yarınki derste öğreneceksin :) )
-  
+  skor1 kullanıyor.
   3. Hangi durumda skor1 tercih edilebilir? Hangi durumda skor2 daha mantıklıdır?
+Eğer verileri açık bir hale getirmek istemiyorsak güvenlik sebebiyle müşterinin variable değerlerini korumak gibi ya da bir sitede indirim uygulanması gibi sadece o kullanıcılar için olmak kaydıyla,
+closure kullanılması mantıklıdır,yani verilerin değiştirilmesini dışarıdan izin verilmicek sadece fonksiyon çağırılmasıyla değiştirilecek durumlarda etkilidir.
+skor 2 ise let skor=0; değeri globalde fonksiyona atıcağımız değeri biz manuel değiştirmek isterse mantıklı ama diğer anlamlarda mantıksız çünkü fonksiyonun işlem uygulayacağı değer açıktır.
+
 */
+
 
 // skor1 kodları
 function skorArtirici() {
@@ -43,20 +50,22 @@ function skorArtirici() {
    return skor++;
   }
 }
-
 const skor1 = skorArtirici();
 
+console.log(skor1());
+console.log(skor1());
+console.log(skor1());
 // skor2 kodları
 let skor = 0;
 
 function skor2() {
   return skor++;
 }
-
+console.log(skor2());
 
 /* Görev 2: takimSkoru() 
 Aşağıdaki takimSkoru() fonksiyonununda aşağıdakileri yapınız:
-  1. Bir çeyrekte bir takımın ürettiği skoru rastgele(random) elde eden bir sonuc dönünüz(return)
+  1. Bir çeyrekte bir takımın ürettiği skoru rastgele(random) elde eden bir sonuc dönünüz(return).
   
   Ön Bilgi: Bir çeyrekte takımlar ortalama 10 ile 25 sayı üretebiliyor
   Örnek: takimSkoru çağrıldığında 10-25 arasında bir skor dönmeli
@@ -64,8 +73,9 @@ Aşağıdaki takimSkoru() fonksiyonununda aşağıdakileri yapınız:
 Not: Bu fonskiyon, aşağıdaki diğer görevler için de bir callback fonksiyonu olarak da kullanılacak
 */
 
-function takimSkoru(/*Kodunuzu buraya yazınız*/){
-    /*Kodunuzu buraya yazınız*/
+function takimSkoru() {
+  let skor=0;
+  return skor=Math.floor(Math.random() * 15 + 10);
 }
 
 
@@ -86,10 +96,19 @@ Aşağıdaki macSonucu() fonksiyonununda aşağıdakileri yapınız:
 }
 */ 
 
-function macSonucu(/*Kodunuzu buraya yazınız*/){
-  /*Kodunuzu buraya yazınız*/
+function macSonucu(takimSkoru, deger) {
+  let EvSahibi = 0;
+  let KonukTakim = 0;
+  if (deger < 5) {
+    for (let i = 1; i <= deger ; i++) {
+      EvSahibi += takimSkoru();
+      KonukTakim += takimSkoru();
+    }
+    return {EvSahibi:EvSahibi,KonukTakim:KonukTakim};
+  }
 }
 
+console.log(macSonucu(takimSkoru, 1));
 
 
 
@@ -109,11 +128,13 @@ Aşağıdaki periyotSkoru() fonksiyonununda aşağıdakileri yapınız:
   */
 
 
-function periyotSkoru(/*Kodunuzu buraya yazınız*/) {
-  /*Kodunuzu buraya yazınız*/
-
+function periyotSkoru(takimSkoru) {
+  return {
+    EvSahibi: takimSkoru(),
+    KonukTakim: takimSkoru(),
+  };
 }
-
+console.log(periyotSkoru(takimSkoru));
 
 /* Zorlayıcı Görev 5: skorTabelasi() 
 Aşağıdaki skorTabelasi() fonksiyonunu kullanarak aşağıdakileri yapınız:
@@ -146,10 +167,28 @@ MAÇ UZAR ise skorTabelasi(periyotSkoru,takimSkoru,4)
 ] */
 // NOTE: Bununla ilgili bir test yoktur. Eğer logladığınız sonuçlar yukarıdakine benziyor ise tmamlandı sayabilirsiniz.
 
-function skorTabelasi(/*Kodunuzu buraya yazınız*/) {
-  /*Kodunuzu buraya yazınız*/
+function skorTabelasi(periyotSkoru, takimSkoru, ceyrek) {
+  let EvSahibiTop=0;
+  let KonukTakimTop=0;
+  if (ceyrek < 5) {
+    for (let i = 1; i <= ceyrek; i++) {
+      const periyot = periyotSkoru(takimSkoru);
+      console.log(`${i}. periyot - EvSahibi: ${periyot.EvSahibi} KonukTakim: ${periyot.KonukTakim}`);
+      EvSahibiTop+=periyot.EvSahibi;
+      KonukTakimTop+=periyot.KonukTakim;
+    }
+    if(EvSahibiTop===KonukTakimTop){
+      const uzatma=periyotSkoru(takimSkoru);
+      console.log(`${1}. uzatma - EvSahibi: ${uzatma.EvSahibi} KonukTakim: ${uzatma.KonukTakim}`);
+      EvSahibiTop+=uzatma.EvSahibi;
+      KonukTakimTop+=uzatma.KonukTakim;  
+    }
+  }
+  if(EvSahibiTop!==KonukTakimTop){
+    console.log(`Maç Sonucu: - EvSahibi: ${EvSahibiTop} KonukTakim: ${KonukTakimTop}`);
+  }
 }
-
+skorTabelasi(periyotSkoru,takimSkoru,4);
 
 
 

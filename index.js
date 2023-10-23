@@ -177,11 +177,13 @@ function skorTabelasi(periyotSkoru, takimSkoru, ceyrek) {
       EvSahibiTop+=periyot.EvSahibi;
       KonukTakimTop+=periyot.KonukTakim;
     }
-    if(EvSahibiTop===KonukTakimTop){
+    while(EvSahibiTop===KonukTakimTop){
       const uzatma=periyotSkoru(takimSkoru);
-      console.log(`${1}. uzatma - EvSahibi: ${uzatma.EvSahibi} KonukTakim: ${uzatma.KonukTakim}`);
+      let u=1;
+      console.log(`${u}. uzatma - EvSahibi: ${uzatma.EvSahibi} KonukTakim: ${uzatma.KonukTakim}`);
       EvSahibiTop+=uzatma.EvSahibi;
       KonukTakimTop+=uzatma.KonukTakim;  
+      u++;   
     }
   }
   if(EvSahibiTop!==KonukTakimTop){
